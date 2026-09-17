@@ -1,1 +1,0 @@
-# bullet-trade-journal
