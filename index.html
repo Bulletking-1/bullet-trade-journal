@@ -1,1 +1,1540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bullet Journal</title>
 
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #0b0b0b;
+    color: #f5f5f5;
+}
+
+nav {
+    background: #111;
+    padding: 18px;
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    border-bottom: 1px solid #292929;
+}
+
+nav a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+nav a:hover {
+    color: #ff8c00;
+}
+
+.container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 25px;
+}
+
+h1, h2, h3 {
+    color: #ff8c00;
+}
+
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.card {
+    background: #151515;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid #292929;
+}
+
+.card h3 {
+    margin-top: 0;
+    font-size: 14px;
+}
+
+.big {
+    font-size: 30px;
+    font-weight: bold;
+}
+
+input, select, textarea {
+    width: 100%;
+    padding: 11px;
+    margin-top: 6px;
+    margin-bottom: 15px;
+    background: #101010;
+    color: white;
+    border: 1px solid #333;
+    border-radius: 7px;
+}
+
+textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+label {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+button {
+    background: #ff8c00;
+    color: #000;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 7px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+button:hover {
+    background: #ffa733;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+th, td {
+    padding: 12px;
+    border-bottom: 1px solid #292929;
+    text-align: left;
+}
+
+th {
+    color: #ff8c00;
+}
+
+tr:hover {
+    background: #171717;
+    cursor: pointer;
+}
+
+.section {
+    background: #111;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    border: 1px solid #292929;
+}
+
+.condition-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    padding: 12px 0;
+    border-bottom: 1px solid #292929;
+}
+
+.good {
+    color: #43d17a;
+}
+
+.bad {
+    color: #ff5c5c;
+}
+
+.neutral {
+    color: #ddd;
+}
+
+.progress {
+    width: 100%;
+    height: 10px;
+    background: #252525;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 6px;
+}
+
+.progress-bar {
+    height: 100%;
+    background: #ff8c00;
+}
+
+.recommendation {
+    padding: 15px;
+    background: #191919;
+    border-left: 4px solid #ff8c00;
+    margin: 10px 0;
+    border-radius: 6px;
+}
+
+.warning {
+    border-left-color: #ff5c5c;
+}
+
+.success {
+    border-left-color: #43d17a;
+}
+
+.muted {
+    color: #999;
+    font-size: 13px;
+}
+
+.checkbox-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.checkbox-grid label {
+    background: #151515;
+    padding: 12px;
+    border-radius: 7px;
+    border: 1px solid #292929;
+}
+
+.checkbox-grid input {
+    width: auto;
+    margin-right: 8px;
+}
+
+.screenshot-preview {
+    max-width: 100%;
+    max-height: 300px;
+    display: block;
+    margin: 10px 0;
+    border-radius: 8px;
+}
+
+.back {
+    margin-top: 20px;
+}
+
+@media(max-width:700px) {
+    .condition-row {
+        grid-template-columns: 1fr;
+    }
+
+    table {
+        font-size: 13px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<nav>
+    <a onclick="showPage('dashboard')">📊 Dashboard</a>
+    <a onclick="showPage('add')">➕ Add Trade</a>
+    <a onclick="showPage('history')">📋 Trade History</a>
+    <a onclick="showPage('analytics')">📈 Analytics</a>
+</nav>
+
+<div class="container">
+
+<!-- DASHBOARD -->
+<div id="dashboard" class="page">
+    <h1>Bullet Journal</h1>
+    <p>Trade journal and Bullet Strike performance tracker.</p>
+
+    <div class="card-grid">
+        <div class="card">
+            <h3>Total Trades</h3>
+            <div class="big" id="dashTrades">0</div>
+        </div>
+
+        <div class="card">
+            <h3>Win Rate</h3>
+            <div class="big" id="dashWinRate">0%</div>
+        </div>
+
+        <div class="card">
+            <h3>Net R</h3>
+            <div class="big" id="dashNetR">0R</div>
+        </div>
+
+        <div class="card">
+            <h3>Profit Factor</h3>
+            <div class="big" id="dashPF">0</div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Bullet Strike Philosophy</h2>
+        <p><b>HTF tells where. LTF tells whether allowed.</b></p>
+        <p>
+            Higher timeframe direction → lower timeframe confirmation.
+            Only entertain the market when there is a valid MSS/CHOCH.
+        </p>
+    </div>
+</div>
+
+
+<!-- ADD TRADE -->
+<div id="add" class="page" style="display:none;">
+    <h1>Add Trade</h1>
+
+    <form id="tradeForm">
+
+        <div class="section">
+            <h2>Trade Information</h2>
+
+            <label>Instrument</label>
+            <input id="instrument" required placeholder="EURUSD">
+
+            <label>Direction</label>
+            <select id="direction">
+                <option>BUY</option>
+                <option>SELL</option>
+            </select>
+
+            <label>Date</label>
+            <input type="date" id="date" required>
+
+            <label>Session</label>
+            <select id="session">
+                <option>London</option>
+                <option>New York</option>
+                <option>Asian</option>
+                <option>Other</option>
+            </select>
+
+            <label>Entry Price</label>
+            <input id="entry" type="number" step="any">
+
+            <label>Stop Loss</label>
+            <input id="sl" type="number" step="any">
+
+            <label>Take Profit</label>
+            <input id="tp" type="number" step="any">
+
+            <label>Result</label>
+            <select id="result">
+                <option>WIN</option>
+                <option>LOSS</option>
+                <option>BREAKEVEN</option>
+            </select>
+
+            <label>Result in R</label>
+            <input id="rResult" type="number" step="0.1" placeholder="Example: 3">
+        </div>
+
+
+        <div class="section">
+            <h2>Bullet Strike Setup</h2>
+
+            <label>HTF Direction</label>
+            <select id="htfDirection">
+                <option>Bullish</option>
+                <option>Bearish</option>
+                <option>Neutral</option>
+            </select>
+
+            <label>HTF Timeframe</label>
+            <select id="htfTimeframe">
+                <option>Monthly</option>
+                <option>Weekly</option>
+                <option>Daily</option>
+                <option>4H</option>
+                <option>2H</option>
+                <option>1H</option>
+                <option>15M</option>
+            </select>
+
+            <label>Entry Timeframe</label>
+            <select id="entryTimeframe">
+                <option>Daily</option>
+                <option>4H</option>
+                <option>1H</option>
+                <option>15M</option>
+                <option>5M</option>
+                <option>1M</option>
+            </select>
+
+            <label>POI</label>
+            <select id="poi">
+                <option>Order Block</option>
+                <option>Fair Value Gap</option>
+                <option>Liquidity</option>
+                <option>Supply/Demand</option>
+                <option>Other</option>
+            </select>
+
+            <h3>Setup Conditions</h3>
+
+            <div class="checkbox-grid">
+                <label>
+                    <input type="checkbox" id="liquidity">
+                    Liquidity Taken
+                </label>
+
+                <label>
+                    <input type="checkbox" id="mss">
+                    MSS / CHOCH
+                </label>
+
+                <label>
+                    <input type="checkbox" id="ob">
+                    Order Block
+                </label>
+
+                <label>
+                    <input type="checkbox" id="fvg">
+                    FVG
+                </label>
+
+                <label>
+                    <input type="checkbox" id="displacement">
+                    Displacement
+                </label>
+
+                <label>
+                    <input type="checkbox" id="insidePOI">
+                    Inside HTF POI
+                </label>
+            </div>
+        </div>
+
+
+        <div class="section">
+            <h2>Trade Screenshots</h2>
+
+            <label>Before Trade Screenshot</label>
+            <input type="file" id="beforeImage" accept="image/*">
+            <img id="beforePreview" class="screenshot-preview">
+
+            <label>After Trade Screenshot</label>
+            <input type="file" id="afterImage" accept="image/*">
+            <img id="afterPreview" class="screenshot-preview">
+        </div>
+
+
+        <div class="section">
+            <h2>Journal</h2>
+
+            <label>Why did I take this trade?</label>
+            <textarea id="why"></textarea>
+
+            <label>What happened?</label>
+            <textarea id="what"></textarea>
+
+            <label>Lesson Learned</label>
+            <textarea id="lesson"></textarea>
+        </div>
+
+        <button type="submit">SAVE TRADE</button>
+
+    </form>
+</div>
+
+
+<!-- HISTORY -->
+<div id="history" class="page" style="display:none;">
+    <h1>Trade History</h1>
+    <p>Click a trade to view its full journal.</p>
+
+    <div class="section">
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Instrument</th>
+                    <th>Direction</th>
+                    <th>Result</th>
+                    <th>R</th>
+                </tr>
+            </thead>
+
+            <tbody id="historyBody"></tbody>
+        </table>
+    </div>
+</div>
+
+
+<!-- TRADE DETAILS -->
+<div id="details" class="page" style="display:none;">
+    <h1>Trade Details</h1>
+
+    <div id="tradeDetails"></div>
+
+    <button class="back" onclick="showPage('history')">
+        ← Back to History
+    </button>
+</div>
+
+
+<!-- ANALYTICS -->
+<div id="analytics" class="page" style="display:none;">
+
+    <h1>📈 Bullet Strike Analytics</h1>
+
+    <p class="muted">
+        Analytics are based only on the trades you record in this journal.
+    </p>
+
+    <!-- CORE METRICS -->
+    <div class="card-grid">
+
+        <div class="card">
+            <h3>Total Trades</h3>
+            <div class="big" id="aTrades">0</div>
+        </div>
+
+        <div class="card">
+            <h3>Win Rate</h3>
+            <div class="big" id="aWinRate">0%</div>
+        </div>
+
+        <div class="card">
+            <h3>Net R</h3>
+            <div class="big" id="aNetR">0R</div>
+        </div>
+
+        <div class="card">
+            <h3>Average R</h3>
+            <div class="big" id="aAvgR">0R</div>
+        </div>
+
+        <div class="card">
+            <h3>Profit Factor</h3>
+            <div class="big" id="aPF">0</div>
+        </div>
+
+        <div class="card">
+            <h3>Expectancy</h3>
+            <div class="big" id="aExpectancy">0R</div>
+        </div>
+
+    </div>
+
+
+    <!-- WIN/LOSS -->
+    <div class="section">
+
+        <h2>📊 Results Breakdown</h2>
+
+        <div class="card-grid">
+
+            <div class="card">
+                <h3>Wins</h3>
+                <div class="big good" id="aWins">0</div>
+            </div>
+
+            <div class="card">
+                <h3>Losses</h3>
+                <div class="big bad" id="aLosses">0</div>
+            </div>
+
+            <div class="card">
+                <h3>Breakeven</h3>
+                <div class="big neutral" id="aBE">0</div>
+            </div>
+
+            <div class="card">
+                <h3>Average Win</h3>
+                <div class="big good" id="aAvgWin">0R</div>
+            </div>
+
+            <div class="card">
+                <h3>Average Loss</h3>
+                <div class="big bad" id="aAvgLoss">0R</div>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- CONDITIONS -->
+    <div class="section">
+
+        <h2>🧠 Bullet Strike Conditions</h2>
+
+        <p class="muted">
+            This section compares trades where each condition was present.
+        </p>
+
+        <div id="conditionAnalytics"></div>
+
+    </div>
+
+
+    <!-- COMPLETE SETUP -->
+    <div class="section">
+
+        <h2>🎯 Complete Bullet Strike Setup</h2>
+
+        <div id="completeSetup"></div>
+
+    </div>
+
+
+    <!-- TIMEFRAME -->
+    <div class="section">
+
+        <h2>⏱ Timeframe Performance</h2>
+
+        <div id="timeframeAnalytics"></div>
+
+    </div>
+
+
+    <!-- SESSION -->
+    <div class="section">
+
+        <h2>🌍 Session Performance</h2>
+
+        <div id="sessionAnalytics"></div>
+
+    </div>
+
+
+    <!-- INSTRUMENT -->
+    <div class="section">
+
+        <h2>💱 Instrument Performance</h2>
+
+        <div id="instrumentAnalytics"></div>
+
+    </div>
+
+
+    <!-- RECOMMENDATIONS -->
+    <div class="section">
+
+        <h2>💡 Data-Based Recommendations</h2>
+
+        <div id="recommendations"></div>
+
+    </div>
+
+</div>
+
+</div>
+
+
+<script>
+
+let trades = JSON.parse(localStorage.getItem("bulletTrades") || "[]");
+
+let beforeBase64 = "";
+let afterBase64 = "";
+
+
+/* =========================
+   PAGE NAVIGATION
+========================= */
+
+function showPage(page) {
+
+    document.querySelectorAll(".page").forEach(p => {
+        p.style.display = "none";
+    });
+
+    document.getElementById(page).style.display = "block";
+
+    if (page === "dashboard") {
+        updateDashboard();
+    }
+
+    if (page === "history") {
+        updateHistory();
+    }
+
+    if (page === "analytics") {
+        updateAnalytics();
+    }
+}
+
+
+/* =========================
+   IMAGE HANDLING
+========================= */
+
+document.getElementById("beforeImage").addEventListener("change", function(e) {
+
+    const file = e.target.files[0];
+
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = function(event) {
+
+        beforeBase64 = event.target.result;
+
+        document.getElementById("beforePreview").src = beforeBase64;
+
+    };
+
+    reader.readAsDataURL(file);
+});
+
+
+document.getElementById("afterImage").addEventListener("change", function(e) {
+
+    const file = e.target.files[0];
+
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = function(event) {
+
+        afterBase64 = event.target.result;
+
+        document.getElementById("afterPreview").src = afterBase64;
+
+    };
+
+    reader.readAsDataURL(file);
+});
+
+
+/* =========================
+   SAVE TRADE
+========================= */
+
+document.getElementById("tradeForm").addEventListener("submit", function(e) {
+
+    e.preventDefault();
+
+    const trade = {
+
+        id: Date.now(),
+
+        instrument: document.getElementById("instrument").value,
+
+        direction: document.getElementById("direction").value,
+
+        date: document.getElementById("date").value,
+
+        session: document.getElementById("session").value,
+
+        entry: Number(document.getElementById("entry").value),
+
+        sl: Number(document.getElementById("sl").value),
+
+        tp: Number(document.getElementById("tp").value),
+
+        result: document.getElementById("result").value,
+
+        r: Number(document.getElementById("rResult").value),
+
+        htfDirection: document.getElementById("htfDirection").value,
+
+        htfTimeframe: document.getElementById("htfTimeframe").value,
+
+        entryTimeframe: document.getElementById("entryTimeframe").value,
+
+        poi: document.getElementById("poi").value,
+
+        conditions: {
+
+            liquidity: document.getElementById("liquidity").checked,
+
+            mss: document.getElementById("mss").checked,
+
+            ob: document.getElementById("ob").checked,
+
+            fvg: document.getElementById("fvg").checked,
+
+            displacement: document.getElementById("displacement").checked,
+
+            insidePOI: document.getElementById("insidePOI").checked
+
+        },
+
+        beforeImage: beforeBase64,
+
+        afterImage: afterBase64,
+
+        why: document.getElementById("why").value,
+
+        what: document.getElementById("what").value,
+
+        lesson: document.getElementById("lesson").value
+
+    };
+
+
+    trades.push(trade);
+
+    try {
+
+        localStorage.setItem("bulletTrades", JSON.stringify(trades));
+
+        alert("Trade saved successfully!");
+
+    } catch(error) {
+
+        alert("Trade saved without screenshots because browser storage is full.");
+
+        trade.beforeImage = "";
+        trade.afterImage = "";
+
+        localStorage.setItem("bulletTrades", JSON.stringify(trades));
+
+    }
+
+
+    document.getElementById("tradeForm").reset();
+
+    document.getElementById("beforePreview").src = "";
+    document.getElementById("afterPreview").src = "";
+
+    beforeBase64 = "";
+    afterBase64 = "";
+
+    showPage("history");
+
+});
+
+
+/* =========================
+   DASHBOARD
+========================= */
+
+function updateDashboard() {
+
+    const total = trades.length;
+
+    const wins = trades.filter(t => t.result === "WIN").length;
+
+    const winRate = total ? (wins / total * 100) : 0;
+
+    const netR = trades.reduce((sum,t) => sum + Number(t.r || 0), 0);
+
+    const grossWin = trades
+        .filter(t => Number(t.r) > 0)
+        .reduce((sum,t) => sum + Number(t.r), 0);
+
+    const grossLoss = Math.abs(
+        trades
+        .filter(t => Number(t.r) < 0)
+        .reduce((sum,t) => sum + Number(t.r), 0)
+    );
+
+    const pf = grossLoss ? grossWin / grossLoss : 0;
+
+
+    document.getElementById("dashTrades").textContent = total;
+
+    document.getElementById("dashWinRate").textContent =
+        winRate.toFixed(1) + "%";
+
+    document.getElementById("dashNetR").textContent =
+        netR.toFixed(2) + "R";
+
+    document.getElementById("dashPF").textContent =
+        pf.toFixed(2);
+
+}
+
+
+/* =========================
+   HISTORY
+========================= */
+
+function updateHistory() {
+
+    const body = document.getElementById("historyBody");
+
+    body.innerHTML = "";
+
+    trades
+        .slice()
+        .reverse()
+        .forEach((trade,index) => {
+
+            const row = document.createElement("tr");
+
+            row.innerHTML = `
+                <td>${trade.date}</td>
+                <td>${trade.instrument}</td>
+                <td>${trade.direction}</td>
+                <td>${trade.result}</td>
+                <td>${Number(trade.r).toFixed(2)}R</td>
+            `;
+
+            row.onclick = function() {
+
+                showTradeDetails(trade);
+
+            };
+
+            body.appendChild(row);
+
+        });
+
+}
+
+
+/* =========================
+   TRADE DETAILS
+========================= */
+
+function showTradeDetails(trade) {
+
+    showPage("details");
+
+    const c = trade.conditions || {};
+
+    document.getElementById("tradeDetails").innerHTML = `
+
+        <div class="section">
+
+            <h2>${trade.instrument} — ${trade.direction}</h2>
+
+            <p>${trade.date} • ${trade.session}</p>
+
+            <h3>RESULT</h3>
+            <p>${trade.result} (${trade.r}R)</p>
+
+            <h3>HTF DIRECTION</h3>
+            <p>${trade.htfDirection}</p>
+
+            <h3>HTF TIMEFRAME</h3>
+            <p>${trade.htfTimeframe}</p>
+
+            <h3>ENTRY TIMEFRAME</h3>
+            <p>${trade.entryTimeframe}</p>
+
+            <h3>ENTRY</h3>
+            <p>${trade.entry}</p>
+
+            <h3>STOP LOSS</h3>
+            <p>${trade.sl}</p>
+
+            <h3>TAKE PROFIT</h3>
+            <p>${trade.tp}</p>
+
+            <h3>POI</h3>
+            <p>${trade.poi}</p>
+
+        </div>
+
+
+        <div class="section">
+
+            <h2>Setup Conditions</h2>
+
+            <p>Liquidity Taken: ${c.liquidity ? "✓" : "✗"}</p>
+            <p>MSS / CHOCH: ${c.mss ? "✓" : "✗"}</p>
+            <p>Order Block: ${c.ob ? "✓" : "✗"}</p>
+            <p>FVG: ${c.fvg ? "✓" : "✗"}</p>
+            <p>Displacement: ${c.displacement ? "✓" : "✗"}</p>
+            <p>Inside HTF POI: ${c.insidePOI ? "✓" : "✗"}</p>
+
+        </div>
+
+
+        <div class="section">
+
+            <h2>Before Trade</h2>
+
+            ${
+                trade.beforeImage
+                ? `<img class="screenshot-preview" src="${trade.beforeImage}">`
+                : `<p class="muted">No screenshot uploaded.</p>`
+            }
+
+        </div>
+
+
+        <div class="section">
+
+            <h2>After Trade</h2>
+
+            ${
+                trade.afterImage
+                ? `<img class="screenshot-preview" src="${trade.afterImage}">`
+                : `<p class="muted">No screenshot uploaded.</p>`
+            }
+
+        </div>
+
+
+        <div class="section">
+
+            <h2>Journal</h2>
+
+            <h3>WHY I TOOK THIS TRADE</h3>
+            <p>${trade.why || "-"}</p>
+
+            <h3>WHAT HAPPENED</h3>
+            <p>${trade.what || "-"}</p>
+
+            <h3>LESSON LEARNED</h3>
+            <p>${trade.lesson || "-"}</p>
+
+        </div>
+    `;
+
+}
+
+
+/* =========================
+   ANALYTICS HELPERS
+========================= */
+
+function getStats(list) {
+
+    const total = list.length;
+
+    if (!total) {
+
+        return {
+            total: 0,
+            wins: 0,
+            losses: 0,
+            be: 0,
+            winRate: 0,
+            netR: 0,
+            avgR: 0,
+            avgWin: 0,
+            avgLoss: 0,
+            profitFactor: 0,
+            expectancy: 0
+        };
+
+    }
+
+
+    const wins = list.filter(t => t.result === "WIN");
+
+    const losses = list.filter(t => t.result === "LOSS");
+
+    const be = list.filter(t => t.result === "BREAKEVEN");
+
+
+    const netR = list.reduce(
+        (sum,t) => sum + Number(t.r || 0),
+        0
+    );
+
+
+    const positive = list
+        .filter(t => Number(t.r) > 0)
+        .reduce((sum,t) => sum + Number(t.r), 0);
+
+
+    const negative = Math.abs(
+        list
+        .filter(t => Number(t.r) < 0)
+        .reduce((sum,t) => sum + Number(t.r), 0)
+    );
+
+
+    const avgWin = wins.length
+        ? wins.reduce((sum,t) => sum + Number(t.r || 0),0) / wins.length
+        : 0;
+
+
+    const avgLoss = losses.length
+        ? losses.reduce((sum,t) => sum + Number(t.r || 0),0) / losses.length
+        : 0;
+
+
+    const winRate = wins.length / total * 100;
+
+    const avgR = netR / total;
+
+    const profitFactor = negative
+        ? positive / negative
+        : positive > 0 ? Infinity : 0;
+
+
+    const expectancy =
+        (winRate / 100 * avgWin) +
+        ((1 - winRate / 100) * avgLoss);
+
+
+    return {
+
+        total,
+        wins: wins.length,
+        losses: losses.length,
+        be: be.length,
+        winRate,
+        netR,
+        avgR,
+        avgWin,
+        avgLoss,
+        profitFactor,
+        expectancy
+
+    };
+
+}
+
+
+/* =========================
+   CONDITION ANALYTICS
+========================= */
+
+function conditionStats(condition) {
+
+    const selected = trades.filter(t =>
+        t.conditions &&
+        t.conditions[condition] === true
+    );
+
+    return getStats(selected);
+
+}
+
+
+function displayCondition(name, key) {
+
+    const s = conditionStats(key);
+
+    if (!s.total) {
+
+        return `
+            <div class="condition-row">
+                <div><b>${name}</b></div>
+                <div class="muted">No trades</div>
+                <div class="muted">Record more trades</div>
+            </div>
+        `;
+
+    }
+
+
+    return `
+
+        <div class="condition-row">
+
+            <div>
+                <b>${name}</b>
+                <div class="progress">
+                    <div
+                        class="progress-bar"
+                        style="width:${Math.min(s.winRate,100)}%"
+                    ></div>
+                </div>
+            </div>
+
+            <div>
+                ${s.total} trades •
+                <span class="${s.winRate >= 50 ? "good" : "bad"}">
+                    ${s.winRate.toFixed(1)}% WR
+                </span>
+            </div>
+
+            <div>
+                Net:
+                <span class="${s.netR >= 0 ? "good" : "bad"}">
+                    ${s.netR.toFixed(2)}R
+                </span>
+                <br>
+                Avg:
+                ${s.avgR.toFixed(2)}R
+            </div>
+
+        </div>
+    `;
+
+}
+
+
+/* =========================
+   COMPLETE SETUP
+========================= */
+
+function updateCompleteSetup() {
+
+    const complete = trades.filter(t => {
+
+        const c = t.conditions || {};
+
+        return (
+            c.liquidity &&
+            c.mss &&
+            c.ob &&
+            c.fvg &&
+            c.displacement &&
+            c.insidePOI
+        );
+
+    });
+
+
+    const s = getStats(complete);
+
+    const box = document.getElementById("completeSetup");
+
+
+    if (!s.total) {
+
+        box.innerHTML = `
+            <div class="recommendation">
+                <b>Not enough data yet.</b>
+                <p>
+                    Record trades with all six Bullet Strike conditions
+                    checked. The app will then measure how this complete
+                    setup performs.
+                </p>
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    box.innerHTML = `
+
+        <div class="card-grid">
+
+            <div class="card">
+                <h3>Complete Setups</h3>
+                <div class="big">${s.total}</div>
+            </div>
+
+            <div class="card">
+                <h3>Win Rate</h3>
+                <div class="big">${s.winRate.toFixed(1)}%</div>
+            </div>
+
+            <div class="card">
+                <h3>Net R</h3>
+                <div class="big">${s.netR.toFixed(2)}R</div>
+            </div>
+
+            <div class="card">
+                <h3>Expectancy</h3>
+                <div class="big">${s.expectancy.toFixed(2)}R</div>
+            </div>
+
+        </div>
+
+        <p>
+            These are trades where liquidity, MSS/CHOCH, OB, FVG,
+            displacement and location inside the HTF POI were all recorded.
+        </p>
+
+    `;
+
+}
+
+
+/* =========================
+   GROUP ANALYTICS
+========================= */
+
+function groupAnalytics(field, elementId) {
+
+    const groups = {};
+
+    trades.forEach(t => {
+
+        const value = t[field] || "Unknown";
+
+        if (!groups[value]) {
+            groups[value] = [];
+        }
+
+        groups[value].push(t);
+
+    });
+
+
+    const container = document.getElementById(elementId);
+
+    container.innerHTML = "";
+
+
+    Object.keys(groups).forEach(name => {
+
+        const s = getStats(groups[name]);
+
+        container.innerHTML += `
+
+            <div class="condition-row">
+
+                <div>
+                    <b>${name}</b>
+                </div>
+
+                <div>
+                    ${s.total} trades<br>
+                    ${s.winRate.toFixed(1)}% WR
+                </div>
+
+                <div>
+                    Net:
+                    <span class="${s.netR >= 0 ? "good" : "bad"}">
+                        ${s.netR.toFixed(2)}R
+                    </span>
+                    <br>
+                    Avg:
+                    ${s.avgR.toFixed(2)}R
+                </div>
+
+            </div>
+
+        `;
+
+    });
+
+
+    if (!trades.length) {
+
+        container.innerHTML =
+            `<p class="muted">Record trades to generate analytics.</p>`;
+
+    }
+
+}
+
+
+/* =========================
+   RECOMMENDATIONS
+========================= */
+
+function generateRecommendations() {
+
+    const box = document.getElementById("recommendations");
+
+    box.innerHTML = "";
+
+
+    if (trades.length < 5) {
+
+        box.innerHTML = `
+            <div class="recommendation">
+                <b>Keep collecting data.</b>
+                <p>
+                    You currently have ${trades.length} recorded trade(s).
+                    Record at least 5–10 trades before drawing strong
+                    conclusions about your strategy.
+                </p>
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    const stats = getStats(trades);
+
+
+    if (stats.netR > 0) {
+
+        box.innerHTML += `
+            <div class="recommendation success">
+                Your recorded trades currently show a positive net result
+                of <b>${stats.netR.toFixed(2)}R</b>.
+            </div>
+        `;
+
+    } else if (stats.netR < 0) {
+
+        box.innerHTML += `
+            <div class="recommendation warning">
+                Your recorded trades currently show a negative net result
+                of <b>${stats.netR.toFixed(2)}R</b>.
+                Review losing trades and identify repeated conditions.
+            </div>
+        `;
+
+    }
+
+
+    const conditions = [
+        ["Liquidity Taken","liquidity"],
+        ["MSS / CHOCH","mss"],
+        ["Order Block","ob"],
+        ["FVG","fvg"],
+        ["Displacement","displacement"],
+        ["Inside HTF POI","insidePOI"]
+    ];
+
+
+    conditions.forEach(([name,key]) => {
+
+        const s = conditionStats(key);
+
+        if (s.total >= 3) {
+
+            if (s.winRate >= 60 && s.netR > 0) {
+
+                box.innerHTML += `
+                    <div class="recommendation success">
+                        <b>${name}</b> is associated with
+                        ${s.winRate.toFixed(1)}% wins across
+                        ${s.total} recorded trades.
+                        Net result: ${s.netR.toFixed(2)}R.
+                    </div>
+                `;
+
+            }
+
+            if (s.winRate < 40 && s.netR < 0) {
+
+                box.innerHTML += `
+                    <div class="recommendation warning">
+                        <b>${name}</b> appears in
+                        ${s.total} recorded trades with a
+                        ${s.winRate.toFixed(1)}% win rate and
+                        ${s.netR.toFixed(2)}R net result.
+                        Review these trades carefully.
+                    </div>
+                `;
+
+            }
+
+        }
+
+    });
+
+
+    if (stats.winRate < 50) {
+
+        box.innerHTML += `
+            <div class="recommendation">
+                Your current recorded win rate is
+                <b>${stats.winRate.toFixed(1)}%</b>.
+                Review whether your entries consistently follow the
+                HTF → LTF confirmation process.
+            </div>
+        `;
+
+    }
+
+
+    if (stats.avgLoss < -1) {
+
+        box.innerHTML += `
+            <div class="recommendation warning">
+                Your average recorded loss is
+                <b>${stats.avgLoss.toFixed(2)}R</b>.
+                Review whether losing trades are exceeding your planned
+                risk.
+            </div>
+        `;
+
+    }
+
+
+    box.innerHTML += `
+        <div class="recommendation">
+            <b>Important:</b>
+            These observations describe your recorded historical data.
+            They do not guarantee future trade outcomes.
+        </div>
+    `;
+
+}
+
+
+/* =========================
+   MAIN ANALYTICS
+========================= */
+
+function updateAnalytics() {
+
+    const s = getStats(trades);
+
+
+    document.getElementById("aTrades").textContent =
+        s.total;
+
+    document.getElementById("aWinRate").textContent =
+        s.winRate.toFixed(1) + "%";
+
+    document.getElementById("aNetR").textContent =
+        s.netR.toFixed(2) + "R";
+
+    document.getElementById("aAvgR").textContent =
+        s.avgR.toFixed(2) + "R";
+
+    document.getElementById("aPF").textContent =
+        s.profitFactor === Infinity
+        ? "∞"
+        : s.profitFactor.toFixed(2);
+
+    document.getElementById("aExpectancy").textContent =
+        s.expectancy.toFixed(2) + "R";
+
+
+    document.getElementById("aWins").textContent =
+        s.wins;
+
+    document.getElementById("aLosses").textContent =
+        s.losses;
+
+    document.getElementById("aBE").textContent =
+        s.be;
+
+    document.getElementById("aAvgWin").textContent =
+        s.avgWin.toFixed(2) + "R";
+
+    document.getElementById("aAvgLoss").textContent =
+        s.avgLoss.toFixed(2) + "R";
+
+
+    document.getElementById("conditionAnalytics").innerHTML =
+
+        displayCondition("Liquidity Taken","liquidity") +
+        displayCondition("MSS / CHOCH","mss") +
+        displayCondition("Order Block","ob") +
+        displayCondition("FVG","fvg") +
+        displayCondition("Displacement","displacement") +
+        displayCondition("Inside HTF POI","insidePOI");
+
+
+    updateCompleteSetup();
+
+
+    groupAnalytics(
+        "entryTimeframe",
+        "timeframeAnalytics"
+    );
+
+
+    groupAnalytics(
+        "session",
+        "sessionAnalytics"
+    );
+
+
+    groupAnalytics(
+        "instrument",
+        "instrumentAnalytics"
+    );
+
+
+    generateRecommendations();
+
+}
+
+
+/* =========================
+   START APP
+========================= */
+
+updateDashboard();
+updateHistory();
+
+showPage("dashboard");
+
+</script>
+
+</body>
+</html>
